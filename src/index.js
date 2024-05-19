@@ -1,7 +1,6 @@
 import "./index.css";
 
 import initialCards from "./components/cards.js";
-
 import logo from "./images/logo.svg";
 import { openModal, closeModal } from "./components/modal.js";
 import {
@@ -19,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // @todo: DOM узлы
-
 document.addEventListener("DOMContentLoaded", function () {
   const placesList = document.querySelector(".places__list");
   initialCards.forEach(function (cardData) {
@@ -86,7 +84,12 @@ function handleAddCardFormSubmit(evt) {
   evt.preventDefault();
   const title = titleInput.value;
   const link = linkInput.value;
-  const newCard = createCard({ name: title, link: link });
+  const newCard = createCard(
+    { name: title, link: link },
+    deleteCard,
+    handleLikeButtonClick,
+    openImagePopup
+  );
   const placesList = document.querySelector(".places__list");
   placesList.prepend(newCard);
   closeModal(addModal);
@@ -94,19 +97,30 @@ function handleAddCardFormSubmit(evt) {
   linkInput.value = '';
 }
 
+// Получаем ссылку на модальное окно с изображением
+const imagePopup = document.querySelector(".popup_type_image");
+const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
+
+// Устанавливаем обработчик события клика по кнопке закрытия 
+imagePopupCloseButton.addEventListener("click", function () {
+  closeModal(imagePopup);
+});
+
 // Функция для открытия изображения в попапе
 function openImagePopup(imageLink, imageName) {
-  const imagePopup = document.querySelector(".popup_type_image");
   const imagePopupImage = imagePopup.querySelector(".popup__image");
   const imagePopupCaption = imagePopup.querySelector(".popup__caption");
-  const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
-
+  openModal(imagePopup);
   imagePopupImage.src = imageLink;
   imagePopupImage.alt = imageName;
   imagePopupCaption.textContent = imageName;
-
-  openModal(imagePopup);
-  imagePopupCloseButton.addEventListener("click", function () {
-    closeModal(imagePopup);
-  });
 }
+
+// Добавляем обработчик события клика на оверлей для всех модальных окон
+document.querySelectorAll('.popup').forEach((popup) => {
+  popup.addEventListener('click', function (event) {
+    if (event.target === popup) {
+      closeModal(popup);
+    }
+  });
+});
