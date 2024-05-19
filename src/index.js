@@ -1,12 +1,14 @@
 import "./index.css";
+
+import initialCards from "./components/cards.js";
+
+import logo from "./images/logo.svg";
+import { openModal, closeModal } from "./components/modal.js";
 import {
   createCard,
   deleteCard,
   handleLikeButtonClick,
 } from "./components/card.js";
-import initialCards from "./components/cards.js";
-import logo from "./images/logo.svg";
-import { openModal, closeModal } from "./components/modal.js"; 
 
 // Динамическая вставка логотипа
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
       deleteCard,
       handleLikeButtonClick,
       openImagePopup
-    ); // createCard, deleteCard, handleLikeButtonClick не используются
+    );
     placesList.appendChild(cardElement);
   });
 });
@@ -88,8 +90,8 @@ function handleAddCardFormSubmit(evt) {
   const placesList = document.querySelector(".places__list");
   placesList.prepend(newCard);
   closeModal(addModal);
-  titleInput.value = "";
-  linkInput.value = "";
+  titleInput.value = '';
+  linkInput.value = '';
 }
 
 // Функция для открытия изображения в попапе
