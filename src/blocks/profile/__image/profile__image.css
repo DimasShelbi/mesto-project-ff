@@ -7,11 +7,30 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
-  
+}
+
+.profile__image::after {
+  content: url("../../../images/vector.svg");
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  width: 26px;
+  height: 26px;
+}
+
+.profile__image:hover::after {
+  display: block;
 }
 
 .photo {
-  background-image: url('../../../images/avatar.jpg')
+  background-image: url("../../../images/avatar.jpg");
+  transition: opacity 0.3s;
+}
+
+.photo:hover {
+  opacity: 0.8;
 }
 
 @media screen and (max-width: 740px) {
