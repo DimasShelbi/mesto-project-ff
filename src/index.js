@@ -18,22 +18,49 @@ const validationConfig = {
 // Включаем валидацию
 enableValidation(validationConfig);
 
-// Динамическая вставка логотипа и загрузка данных
+// Поиск элементов
+const profileAvatar = document.querySelector(".profile__image");
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+const placesList = document.querySelector(".places__list");
+const logoElement = document.querySelector(".header__logo");
+
+const editButton = document.querySelector(".profile__edit-button");
+const editModal = document.querySelector(".popup_type_edit");
+const editModalCloseButton = editModal.querySelector(".popup__close");
+const editFormElement = editModal.querySelector(".popup__form");
+const nameInput = editModal.querySelector(".popup__input_type_name");
+const jobInput = editModal.querySelector(".popup__input_type_description");
+const editSubmitButton = editFormElement.querySelector(".popup__button");
+
+const addButton = document.querySelector(".profile__add-button");
+const addModal = document.querySelector(".popup_type_new-card");
+const titleInput = addModal.querySelector(".popup__input_type_card-name");
+const linkInput = addModal.querySelector(".popup__input_type_url");
+const addModalCloseButton = addModal.querySelector(".popup__close");
+const addFormElement = addModal.querySelector(".popup__form");
+const addSubmitButton = addFormElement.querySelector(".popup__button");
+
+const imagePopup = document.querySelector(".popup_type_image");
+const imagePopupImage = imagePopup.querySelector(".popup__image");
+const imagePopupCaption = imagePopup.querySelector(".popup__caption");
+const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
+
+const avatarButton = document.querySelector('.profile__image');
+const avatarModal = document.querySelector('.popup_type_avatar');
+const avatarFormElement = avatarModal.querySelector('.popup__form');
+const avatarInput = avatarModal.querySelector('.popup__input_type_avatar-url');
+const avatarModalCloseButton = avatarModal.querySelector('.popup__close');
+const avatarSubmitButton = avatarFormElement.querySelector(".popup__button");
+
+let currentUserId;
+
 document.addEventListener("DOMContentLoaded", function () {
-  const logoElement = document.querySelector(".header__logo");
   if (logoElement) {
     logoElement.src = logo;
   }
 
-  const profileAvatar = document.querySelector(".profile__image");
-  const profileTitle = document.querySelector(".profile__title");
-  const profileDescription = document.querySelector(".profile__description");
-
-  let currentUserId;
-
   // Загрузка информации о пользователе и карточек при загрузке страницы
-  const placesList = document.querySelector(".places__list");
-
   Promise.all([getInitialCards(), getUserInfo()])
     .then(([cards, userInfo]) => {
       profileTitle.textContent = userInfo.name;
@@ -60,25 +87,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Открытие модального окна редактирования профиля
-const editButton = document.querySelector(".profile__edit-button");
-const editModal = document.querySelector(".popup_type_edit");
-const editModalCloseButton = editModal.querySelector(".popup__close");
-const editFormElement = editModal.querySelector(".popup__form");
-const nameInput = editModal.querySelector(".popup__input_type_name");
-const jobInput = editModal.querySelector(".popup__input_type_description");
-const editSubmitButton = editFormElement.querySelector(".popup__button");
-
 editButton.addEventListener("click", function () {
-  getUserInfo()
-    .then((userInfo) => {
-      nameInput.value = userInfo.name;
-      jobInput.value = userInfo.about;
-      clearValidation(editModal, validationConfig);
-      openModal(editModal);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+  clearValidation(editModal, validationConfig);
+  openModal(editModal);
 });
 
 // Закрытие модального окна
@@ -108,14 +121,6 @@ editFormElement.addEventListener("submit", function (evt) {
 });
 
 // Функционал добавления новой карточки
-const addButton = document.querySelector(".profile__add-button");
-const addModal = document.querySelector(".popup_type_new-card");
-const titleInput = addModal.querySelector(".popup__input_type_card-name");
-const linkInput = addModal.querySelector(".popup__input_type_url");
-const addModalCloseButton = addModal.querySelector(".popup__close");
-const addFormElement = addModal.querySelector(".popup__form");
-const addSubmitButton = addFormElement.querySelector(".popup__button");
-
 addButton.addEventListener("click", function () {
   clearValidation(addModal, validationConfig);
   openModal(addModal);
@@ -140,7 +145,6 @@ addFormElement.addEventListener("submit", function (evt) {
         handleLikeButtonClick,
         openImagePopup
       );
-      const placesList = document.querySelector(".places__list");
       placesList.prepend(newCard);
       closeModal(addModal);
       titleInput.value = '';
@@ -155,18 +159,12 @@ addFormElement.addEventListener("submit", function (evt) {
 });
 
 // Получаем ссылку на модальное окно с изображением
-const imagePopup = document.querySelector(".popup_type_image");
-const imagePopupCloseButton = imagePopup.querySelector(".popup__close");
-
-// Устанавливаем обработчик события клика по кнопке закрытия 
 imagePopupCloseButton.addEventListener("click", function () {
   closeModal(imagePopup);
 });
 
 // Функция для открытия изображения в попапе
 function openImagePopup(imageLink, imageName) {
-  const imagePopupImage = imagePopup.querySelector(".popup__image");
-  const imagePopupCaption = imagePopup.querySelector(".popup__caption");
   openModal(imagePopup);
   imagePopupImage.src = imageLink;
   imagePopupImage.alt = imageName;
@@ -183,13 +181,6 @@ document.querySelectorAll('.popup').forEach((popup) => {
 });
 
 // Функционал обновления аватара
-const avatarButton = document.querySelector('.profile__image');
-const avatarModal = document.querySelector('.popup_type_avatar');
-const avatarFormElement = avatarModal.querySelector('.popup__form');
-const avatarInput = avatarModal.querySelector('.popup__input_type_avatar-url');
-const avatarModalCloseButton = avatarModal.querySelector('.popup__close');
-const avatarSubmitButton = avatarFormElement.querySelector(".popup__button");
-
 avatarButton.addEventListener('click', function () {
   clearValidation(avatarModal, validationConfig);
   openModal(avatarModal);
@@ -206,7 +197,6 @@ avatarFormElement.addEventListener('submit', function (evt) {
   avatarSubmitButton.textContent = 'Сохранение...';
   updateAvatar(avatarUrl)
     .then((userInfo) => {
-      const profileAvatar = document.querySelector(".profile__image");
       if (profileAvatar) {
         profileAvatar.style.backgroundImage = `url(${userInfo.avatar})`;
       }

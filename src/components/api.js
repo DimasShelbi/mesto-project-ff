@@ -1,5 +1,3 @@
-// api.js
-
 const config = {
   baseUrl: 'https://mesto.nomoreparties.co/v1/wff-cohort-13',
   headers: {
@@ -8,18 +6,24 @@ const config = {
   }
 };
 
+// Функция проверки ответа
+function checkResponse(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const updateUserInfo = (name, about) => {
@@ -30,8 +34,7 @@ export const updateUserInfo = (name, about) => {
       name: name,
       about: about
     })
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const addNewCard = (name, link) => {
@@ -42,32 +45,28 @@ export const addNewCard = (name, link) => {
       name: name,
       link: link
     })
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const deleteCardFromServer = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const likeCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'PUT',
     headers: config.headers
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const unlikeCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: config.headers
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };
 
 export const updateAvatar = (avatarUrl) => {
@@ -77,6 +76,5 @@ export const updateAvatar = (avatarUrl) => {
     body: JSON.stringify({
       avatar: avatarUrl
     })
-  })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
+  }).then(checkResponse);
 };

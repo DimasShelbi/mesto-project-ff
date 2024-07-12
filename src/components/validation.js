@@ -1,8 +1,3 @@
-// validation.js
-
-const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
-const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-
 function getCustomErrorMessage(inputElement) {
     if (inputElement.validity.valueMissing) {
         return "Это поле обязательно для заполнения.";
@@ -10,11 +5,8 @@ function getCustomErrorMessage(inputElement) {
     if (inputElement.validity.tooShort || inputElement.validity.tooLong) {
         return `Длина поля должна быть от ${inputElement.minLength} до ${inputElement.maxLength} символов.`;
     }
-    if (inputElement.name === "name" && !nameRegex.test(inputElement.value)) {
-        return "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы.";
-    }
-    if (inputElement.name === "link" && !urlRegex.test(inputElement.value)) {
-        return "Введите корректный URL.";
+    if (inputElement.validity.patternMismatch) {
+        return inputElement.dataset.errorMessage;
     }
     return inputElement.validationMessage;
 }
@@ -42,7 +34,7 @@ function showInputError(formElement, inputElement, errorMessage, settings) {
 // Проверка валидности поля
 function checkInputValidity(formElement, inputElement, settings) {
     const errorMessage = getCustomErrorMessage(inputElement);
-    if (!inputElement.validity.valid || (inputElement.name === "name" && !nameRegex.test(inputElement.value)) || (inputElement.name === "link" && !urlRegex.test(inputElement.value))) {
+    if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, errorMessage, settings);
     } else {
         hideInputError(formElement, inputElement, settings);
@@ -62,7 +54,7 @@ function setSubmitButtonState(buttonElement, isActive, settings) {
 
 // Проверка состояния кнопки
 function toggleButtonState(inputList, buttonElement, settings) {
-    const isFormValid = inputList.every((inputElement) => inputElement.validity.valid && (inputElement.name !== "name" || nameRegex.test(inputElement.value)) && (inputElement.name !== "link" || urlRegex.test(inputElement.value)));
+    const isFormValid = inputList.every((inputElement) => inputElement.validity.valid);
     setSubmitButtonState(buttonElement, isFormValid, settings);
 }
 
