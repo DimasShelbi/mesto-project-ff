@@ -930,8 +930,16 @@ template {
   margin-top: 48px;
 }
 
+.popup__button_disabled {
+  background-color: white; /* Белый фон */
+  border: 1px solid black; /* Черный бордер */
+  color: black; /* Черный шрифт */
+  opacity: 0.2; /* Прозрачность 20% */
+  cursor: not-allowed; /* Указатель для неактивной кнопки */
+}
+
 .popup__button:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background-color: #000 80%;
   cursor: pointer;
 }
 
